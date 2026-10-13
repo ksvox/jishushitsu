@@ -21,7 +21,7 @@ export default function Home() {
           <p className="top-lead">
             楽なところは暗記。
             <br />
-            忘れても、理屈で答えを導ける。
+            忘れても、理屈で答えを導けるよ。
           </p>
           <svg aria-hidden="true" width="150" height="14" viewBox="0 0 150 14">
             <path d="M2 8 C30 3 60 12 90 6 C110 3 130 9 148 5" fill="none" stroke="#F59A8B" strokeWidth="3" strokeLinecap="round" />
