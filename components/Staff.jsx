@@ -34,7 +34,7 @@ export default function Staff({ notes = [], keySig = null, chalk = false, width 
       {sigLetters.map((l, i) => {
         const s = sigType === '#' ? SHARP_AT[l] : FLAT_AT[l];
         return (
-          <text key={i} x={74 + i * 15} y={y(s) + (sigType === '#' ? 8 : 5)} fontFamily="'Noto Music', serif" fontSize="26" fill={ink}>
+          <text key={i} x={74 + i * 15} y={y(s) + (sigType === '#' ? 8 : 5)} fontFamily="'Noto Music', serif" fontSize="26" fill={(keySig.colors && keySig.colors[i]) || ink}>
             {sigType === '#' ? '♯' : '♭'}
           </text>
         );
