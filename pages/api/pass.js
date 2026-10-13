@@ -1,7 +1,9 @@
 import { verifyMonteiPass, issueCookie, cookieOk } from '../../lib/pass';
+import { isAdmin } from '../../lib/adminCheck';
 
 // 門弟アプリから ?kspass=... 付きで開かれた時、または開くたびに呼ばれる
-export default function handler(req, res) {
+// 管理者(info@ksvox.net)としてログイン中なら、通行証がなくても開ける
+export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   try {
     const token = req.query.kspass;
@@ -9,7 +11,9 @@ export default function handler(req, res) {
       issueCookie(res);
       return res.json({ ok: true });
     }
-    return res.json({ ok: cookieOk(req) });
+    if (cookieOk(req)) return res.json({ ok: true });
+    if (await isAdmin(req)) return res.json({ ok: true, admin: true });
+    return res.json({ ok: false });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message });
   }
