@@ -2,13 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { BackIcon } from '../../components/Icons';
-import { Hanamaru, Batsu, TimerRing } from '../../components/Marks';
+import { Hanamaru, Batsu } from '../../components/Marks';
 import { QuestionView, explain, promptText, ExplainVisual } from '../../components/Questions';
 import { Rich } from '../../lib/rich';
 import { genInterval, genKeyToSig, genSigToKey, genParallel, genScale, genMinorForm, shuffle } from '../../lib/theory';
 
 const TEST_COUNT = 10;
-const GOAL = 20;
+const GOAL = 20; // 度数は1問20秒以内が目標
 
 const CH = {
   1: {
@@ -137,14 +137,14 @@ export default function Practice() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady, ch, isTest]);
 
-  // タイマー
+
+  // 経過時間(実力テストの時だけ表示)
   useEffect(() => {
-    if (phase !== 'ask') return undefined;
+    if (!isTest || phase !== 'ask') return undefined;
     const id = setInterval(() => setNow(Date.now()), 250);
     return () => clearInterval(id);
-  }, [phase]);
+  }, [phase, isTest]);
 
-  const elapsed = (now - startAt) / 1000;
 
   const onSubmit = ({ ok, your, correct }) => {
     const sec = (Date.now() - startAt) / 1000;
@@ -191,9 +191,9 @@ export default function Practice() {
             )}
           </div>
         </div>
-        {isTest
-          ? phase !== 'finished' && <div className="elapsed" aria-label="経過時間">{fmtClock((now - testStart) / 1000)}</div>
-          : phase === 'ask' && <TimerRing seconds={GOAL - elapsed} total={GOAL} />}
+        {isTest && phase !== 'finished' && (
+          <div className="elapsed" aria-label="経過時間">{fmtClock((now - testStart) / 1000)}</div>
+        )}
       </div>
       {!isTest && (
         <div className="tabs" role="tablist">
@@ -213,34 +213,38 @@ export default function Practice() {
     const total = (testEnd - testStart) / 1000;
     const avg = total / TEST_COUNT;
     const wrong = answers.map((a, i) => ({ ...a, no: i + 1 })).filter((a) => !a.ok);
-    const reached = score >= 8 && avg <= GOAL; // 8問以上正解 かつ 平均20秒以内
+    const limit = TEST_COUNT * GOAL; // 10問なら200秒
+    const fast = total <= limit;
     return (
       <div className="app">
         {header}
         <main className="paper q-area">
-          <div className="result-top">
-            <div>
-              <div style={{ fontSize: 14, color: '#55625A', fontWeight: 700 }}>点数</div>
-              <div className="score">
-                {score}
-                <small> / {TEST_COUNT}</small>
-              </div>
-            </div>
-            <div className={`stamp ${reached ? '' : 'yet'}`}>
-              <small>8問以上・平均20秒</small>
-              <b>{reached ? '達成' : 'もう少し'}</b>
+          <div>
+            <div style={{ fontSize: 14, color: '#55625A', fontWeight: 700 }}>点数</div>
+            <div className="score">
+              {score}
+              <small> / {TEST_COUNT}</small>
             </div>
           </div>
           <div className="stats">
             <div className="stat">
-              <small>かかったタイム</small>
+              <small>かかった時間</small>
               <div>{fmtTime(total)}</div>
             </div>
             <div className="stat">
               <small>1問あたり</small>
-              <div style={{ color: reached ? '#C8381F' : undefined }}>{avg.toFixed(1)}秒</div>
+              <div>{avg.toFixed(1)}秒</div>
             </div>
           </div>
+          {ch === 1 && (
+            <div className={`advice ${fast && score >= 8 ? 'good' : ''}`}>
+              {!fast
+                ? '1問20秒以下で回答できるようにしよう!'
+                : score >= 8
+                  ? 'もう初級はバッチリですね!'
+                  : 'スピードは十分!次は正解を増やそう!'}
+            </div>
+          )}
           <div className="steps-head">間違えた問題</div>
           {wrong.length === 0 ? (
             <p style={{ margin: 0, fontWeight: 700 }}>全問正解!</p>
@@ -281,10 +285,7 @@ export default function Practice() {
                 <div className="verdict-text">
                   <span className={result.ok ? 'verdict-ok' : 'verdict-ng'}>{result.ok ? '正解!' : '残念!正解は…'}</span>
                   <span className="verdict-ans" style={{ fontSize: result.correct.length > 10 ? 20 : 32 }}>{result.correct}</span>
-                  <span className="verdict-meta">
-                    {!result.ok && <>あなた:{result.your} ・ </>}
-                    {Math.round(result.sec)}秒
-                  </span>
+                  {!result.ok && <span className="verdict-meta">あなた:{result.your}</span>}
                 </div>
               </div>
             )}

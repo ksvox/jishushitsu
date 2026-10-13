@@ -47,7 +47,7 @@ export default function Home() {
         <div className="goal">
           <ClockIcon />
           <span>
-            <strong>目標:1問20秒以内</strong>(正門下生レベル)
+            <strong>度数の目標:1問20秒以内</strong>(正門下生レベル)
           </span>
         </div>
       </main>

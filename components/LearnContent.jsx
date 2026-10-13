@@ -335,17 +335,30 @@ function SigOrder() {
   );
 }
 
+function Chain({ items }) {
+  return (
+    <div className="chain">
+      {items.map((x, i) => (
+        <span key={i}>
+          {i > 0 && <span className="arr">→</span>}
+          {x[0]}<small>({x[1]})</small>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function SigCount() {
   return (
     <>
       <p>調号の数でキーが決まる。</p>
       <div className="swap">
         <div><span className="em">#系</span>(完全5度上へ)</div>
-        <div style={{ fontSize: 17 }}>C(0)→G(1)→D(2)→A(3)→E(4)→B(5)→F#(6)→C#(7)</div>
+        <Chain items={[['C', 0], ['G', 1], ['D', 2], ['A', 3], ['E', 4], ['B', 5], ['F#', 6], ['C#', 7]]} />
       </div>
       <div className="swap">
         <div><span className="em">♭系</span>(完全5度下へ)</div>
-        <div style={{ fontSize: 17 }}>C(0)→F(1)→B♭(2)→E♭(3)→A♭(4)→D♭(5)→G♭(6)→C♭(7)</div>
+        <Chain items={[['C', 0], ['F', 1], ['B♭', 2], ['E♭', 3], ['A♭', 4], ['D♭', 5], ['G♭', 6], ['C♭', 7]]} />
       </div>
       <p>暗記がおすすめ。でも「完全5度ずつ進む」と分かっていれば、自分で導ける。</p>
       <p><span className="em-r">マイナーキー</span>は、平行調のメジャーを考えればOK!</p>
