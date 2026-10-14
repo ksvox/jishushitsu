@@ -57,7 +57,7 @@ export default function Learn() {
             <button className="btn btn-wood" onClick={() => setP(p - 1)}>もどる</button>
           )}
           {last ? (
-            <Link href={`/practice/${ch}`} className="btn btn-yellow">練習へ</Link>
+            <Link href={chapter.practiceHref || `/practice/${ch}`} className="btn btn-yellow">練習へ</Link>
           ) : (
             <button className="btn btn-yellow" onClick={() => setP(p + 1)}>次へ</button>
           )}

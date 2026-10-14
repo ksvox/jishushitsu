@@ -88,7 +88,7 @@ export default function Ear() {
             <BackIcon />
           </Link>
           <div className="bhead-titles">
-            <div className="bhead-sub">中級編 STEP5 耳コピ</div>
+            <div className="bhead-sub">上級編 耳コピ</div>
             <div className="bhead-title">コードを聞き取ろう</div>
           </div>
         </div>

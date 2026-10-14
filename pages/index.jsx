@@ -11,6 +11,7 @@ const MID = [
 const CHAPTERS = [
   { no: 1, badge: '第一章', name: '度数', desc: '2つの音の距離を、名前で言えるように' },
   { no: 2, badge: '第二章', name: '調号', desc: 'キーと#・♭の関係が、一瞬でわかるように' },
+  { no: 3, badge: '第三章', name: '進行記号', desc: '譜面のどこへ進むのか、迷わず追えるように', practice: '/roadmap', noTest: true },
 ];
 
 export default function Home() {
@@ -22,9 +23,8 @@ export default function Home() {
           <div className="top-school">ボーカル道場 K's VOX</div>
           <div className="top-title-row">
             <h1 className="top-title">音楽自習室</h1>
-            <span className="top-tag">初級編</span>
           </div>
-          <p className="top-subtitle">〜 度数から調号まで 〜</p>
+          <p className="top-subtitle">〜 ボーカルに必要な楽典基礎 〜</p>
           <p className="top-lead">
             楽なところは暗記。
             <br />
@@ -37,6 +37,10 @@ export default function Home() {
       </header>
 
       <main className="menu paper">
+        <div className="mid-head" style={{ marginTop: 0 }}>
+          <span className="chapter-badge">初級編</span>
+          <span className="mid-note">覚える → 練習 → 実力テスト</span>
+        </div>
         {CHAPTERS.map((c) => (
           <section className="chapter" key={c.no}>
             <div className="chapter-head">
@@ -44,10 +48,10 @@ export default function Home() {
               <h2 className="chapter-name" style={{ margin: 0 }}>{c.name}</h2>
             </div>
             <p className="chapter-desc">{c.desc}</p>
-            <div className="chapter-btns">
+            <div className="chapter-btns" style={c.noTest ? { gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' } : undefined}>
               <Link href={`/learn/${c.no}`} className="btn btn-line">覚える</Link>
-              <Link href={`/practice/${c.no}`} className="btn btn-line">練習</Link>
-              <Link href={`/practice/${c.no}?mode=test`} className="btn btn-ink">実力テスト</Link>
+              <Link href={c.practice || `/practice/${c.no}`} className={`btn ${c.noTest ? 'btn-ink' : 'btn-line'}`}>練習</Link>
+              {!c.noTest && <Link href={`/practice/${c.no}?mode=test`} className="btn btn-ink">実力テスト</Link>}
             </div>
           </section>
         ))}
@@ -71,8 +75,12 @@ export default function Home() {
             </div>
           </section>
         ))}
+        <div className="mid-head">
+          <span className="chapter-badge">上級編</span>
+          <span className="mid-note">自動で作られる曲のコードを聞き取る</span>
+        </div>
         <section className="mid-row">
-          <div className="mid-name"><small>STEP5</small>耳コピ</div>
+          <div className="mid-name">耳コピ</div>
           <div className="mid-btns three">
             <Link href="/mid/ear?level=beginner" className="btn btn-line">初級</Link>
             <Link href="/mid/ear?level=intermediate" className="btn btn-line">中級</Link>

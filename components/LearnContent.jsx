@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Keyboard from './Keyboard';
 import Staff from './Staff';
+import Score from './Score';
+import { EXAMPLES, solveOrder } from '../lib/roadmap';
 import { PlayIcon } from './Icons';
 import { playInterval, playSequence } from '../lib/sound';
 import {
@@ -485,6 +487,107 @@ function HowToRead() {
   );
 }
 
+
+/* ===== 第三章 進行記号 ===== */
+function Order({ bars }) {
+  return <div className="order">進む順番:{solveOrder(bars).join(' → ')}</div>;
+}
+
+function RepeatSign() {
+  return (
+    <>
+      <p>
+        <span className="em">リピート記号</span>
+        <span className="read-as">(読み方:リピート)</span>
+      </p>
+      <p>「‖:」から「:‖」までを、<span className="em-r">もう1回</span>くり返す。</p>
+      <Score chalk bars={EXAMPLES.repeat} />
+      <Order bars={EXAMPLES.repeat} />
+      <p style={{ marginTop: 8 }}>「‖:」がない時は、<span className="em">曲の最初</span>に戻る。</p>
+      <Score chalk bars={EXAMPLES.repeatNoStart} />
+      <Order bars={EXAMPLES.repeatNoStart} />
+    </>
+  );
+}
+
+function Endings() {
+  return (
+    <>
+      <p>
+        <span className="em">1カッコ・2カッコ</span>
+        <span className="read-as">(読み方:いちかっこ・にかっこ)</span>
+      </p>
+      <p>
+        1回目は<span className="em">1カッコ</span>を通ってくり返し、
+        <br />
+        2回目は1カッコを<span className="em-r">飛ばして</span>、<span className="em">2カッコ</span>へ進む。
+      </p>
+      <Score chalk bars={EXAMPLES.endings} />
+      <Order bars={EXAMPLES.endings} />
+    </>
+  );
+}
+
+function DcFine() {
+  return (
+    <>
+      <p>
+        <span className="em">D.C.</span>
+        <span className="read-as">(読み方:ダ・カーポ)</span>
+        <br />
+        → <span className="em-r">曲の最初</span>に戻る
+      </p>
+      <p>
+        <span className="em">Fine</span>
+        <span className="read-as">(読み方:フィーネ)</span>
+        <br />
+        → 戻った後、ここで<span className="em-r">終わり</span>
+      </p>
+      <p style={{ fontSize: 16 }}>「D.C. al Fine(ダ・カーポ・アル・フィーネ)」=最初に戻って、Fineで終わる</p>
+      <Score chalk bars={EXAMPLES.dcFine} />
+      <Order bars={EXAMPLES.dcFine} />
+    </>
+  );
+}
+
+function DsCoda() {
+  return (
+    <>
+      <p>
+        <span className="em">D.S.</span>
+        <span className="read-as">(読み方:ダル・セーニョ)</span>
+        <br />→ <span className="em-r">𝄋(セーニョ)</span>の所に戻る
+      </p>
+      <p>
+        <span className="em">to Coda</span>
+        <span className="read-as">(読み方:トゥ・コーダ)</span>
+        <br />→ 戻った後、ここから<span className="em-r">𝄌(コーダ)</span>へ飛ぶ
+      </p>
+      <p style={{ fontSize: 16 }}>「D.S. al Coda(ダル・セーニョ・アル・コーダ)」=𝄋に戻って、to Codaからコーダへ。「D.S. al Fine」「D.C. al Coda」という組み合わせもあります</p>
+      <Score chalk bars={EXAMPLES.dsCoda} />
+      <Order bars={EXAMPLES.dsCoda} />
+    </>
+  );
+}
+
+function ReadingTips() {
+  return (
+    <>
+      <p className="em-r" style={{ fontSize: 20 }}>D.C.・D.S.で戻った後のリピート記号は、くり返しません!</p>
+      <p>戻った後に1カッコ・2カッコがあれば、1カッコを飛ばして2カッコへ。</p>
+      <Score chalk bars={EXAMPLES.noRepeatAfter} />
+      <Order bars={EXAMPLES.noRepeatAfter} />
+      <div className="swap" style={{ marginTop: 6 }}>
+        <div className="em">読む順番のコツ</div>
+        <div>① まず全体を見て、記号を全部探す</div>
+        <div>② リピート → カッコ → D.C./D.S. → Coda/Fine の順に確認</div>
+        <div>③ 戻った後は、リピートしない</div>
+        <div>④ 最後に、指でなぞって通してみる</div>
+      </div>
+    </>
+  );
+}
+
 export const LEARN = {
   1: {
     name: '度数',
@@ -508,6 +611,18 @@ export const LEARN = {
       { title: '⑤ 調号が付く順番', tag: '暗記', Body: SigOrder },
       { title: '⑥ 調号の数とキー', tag: '理解', Body: SigCount },
       { title: '⑦ 見分け方', tag: '暗記', Body: HowToRead },
+    ],
+  },
+  3: {
+    name: '進行記号',
+    badge: '第三章',
+    practiceHref: '/roadmap',
+    pages: [
+      { title: '① リピート記号', tag: '暗記', Body: RepeatSign },
+      { title: '② 1カッコ・2カッコ', tag: '暗記', Body: Endings },
+      { title: '③ D.C.とFine', tag: '暗記', Body: DcFine },
+      { title: '④ D.S.とCoda', tag: '暗記', Body: DsCoda },
+      { title: '⑤ 読む順番のコツ', tag: '理解', Body: ReadingTips },
     ],
   },
 };

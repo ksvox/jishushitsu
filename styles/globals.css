@@ -347,3 +347,53 @@ button:disabled { cursor: default; }
 .bar-correct small { font-size: 11px; color: var(--ink-mid); font-weight: 700; }
 .mixer { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
 .mixer .opt { font-size: 13px; min-height: 42px; }
+
+/* ===== 第三章 進行記号の譜面 ===== */
+.road { --ln: #23382b; --bg: #fff; color: var(--ink); display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.road.chalk { --ln: #f4f1e6; --bg: #2d4a3a; color: var(--chalk); }
+.road-row { display: grid; gap: 0; }
+.sbar { position: relative; background: transparent; border: none; padding: 0; margin: 0; color: inherit; font-family: var(--font-ui); display: flex; flex-direction: column; min-width: 0; }
+button.sbar { cursor: pointer; }
+.sb-top { position: relative; height: 24px; }
+.sb-ending { position: absolute; left: 0; right: 0; top: 16px; height: 8px; border-top: 1.5px solid var(--ln); }
+.sb-ending.start { border-left: 1.5px solid var(--ln); left: 3px; }
+.sb-ending.end { border-right: 1.5px solid var(--ln); right: 3px; }
+.sb-ending.start { font-size: 11px; font-weight: 700; }
+.sb-ending.start::before { content: attr(data-x); }
+.sb-ending { font-size: 11px; line-height: 1; padding: 2px 0 0 3px; font-weight: 700; }
+.sb-sign { position: absolute; left: 2px; top: -4px; font-family: 'Noto Music', serif; font-size: 22px; line-height: 1; }
+.sb-right { position: absolute; right: 3px; top: 0; font-size: 10px; font-style: italic; font-weight: 700; white-space: nowrap; }
+.sb-glyph { font-family: 'Noto Music', serif; font-style: normal; font-size: 13px; }
+.sb-staff {
+  position: relative; height: 46px;
+  background-image:
+    linear-gradient(var(--ln), var(--ln)), linear-gradient(var(--ln), var(--ln)), linear-gradient(var(--ln), var(--ln)),
+    linear-gradient(var(--ln), var(--ln)), linear-gradient(var(--ln), var(--ln));
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 6px, 0 14px, 0 22px, 0 30px, 0 38px;
+}
+.sb-line-l, .sb-line-r { position: absolute; top: 6px; height: 33px; width: 14px; }
+.sb-line-l { left: 0; }
+.sb-line-r { right: 0; }
+.sb-line-r::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 1.5px; background: var(--ln); }
+.sb-line-r.final::after, .sb-line-r.repeat::after { width: 4px; }
+.sb-line-r.final::before, .sb-line-r.repeat::before { content: ''; position: absolute; right: 6px; top: 0; bottom: 0; width: 1.5px; background: var(--ln); }
+.road-row .sbar:first-child .sb-line-l::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1.5px; background: var(--ln); }
+.sb-line-l.repeat::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px !important; background: var(--ln); }
+.sb-line-l.repeat::after { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 1.5px; background: var(--ln); }
+.rdots { position: absolute; top: 10px; width: 4px; height: 4px; border-radius: 50%; background: var(--ln); box-shadow: 0 8px 0 var(--ln); }
+.sb-line-l .rdots { left: 9px; }
+.sb-line-r .rdots { right: 9px; }
+.sb-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.sb-label { font-size: 19px; font-weight: 900; }
+.sb-label::before { content: ''; }
+.sbar .sb-label { text-shadow: 0 0 4px var(--bg), 0 0 4px var(--bg), 0 0 4px var(--bg); }
+.sbar.flash .sb-label { color: var(--red); }
+.road.chalk .sbar.flash .sb-label { color: var(--chalk-y); }
+.sb-bottom { height: 16px; font-size: 9.5px; font-style: italic; font-weight: 700; text-align: right; padding-right: 3px; white-space: nowrap; }
+.order { font-size: 16px; font-weight: 700; letter-spacing: 0.02em; line-height: 1.8; word-break: break-all; }
+.order .bad { color: var(--red); text-decoration: underline; text-underline-offset: 4px; }
+.order .good { color: #3c8a5a; text-decoration: underline; text-underline-offset: 4px; }
+.board .order { color: var(--chalk-y); }
+.read-as { font-size: 15px; color: var(--chalk-dim); }
