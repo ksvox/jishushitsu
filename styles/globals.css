@@ -345,3 +345,5 @@ button:disabled { cursor: default; }
 .bar-correct { font-size: 14px; font-weight: 900; color: var(--red); display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
 .bar.ok .bar-correct { color: #3c8a5a; }
 .bar-correct small { font-size: 11px; color: var(--ink-mid); font-weight: 700; }
+.mixer { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+.mixer .opt { font-size: 13px; min-height: 42px; }

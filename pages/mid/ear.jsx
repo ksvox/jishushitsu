@@ -18,7 +18,7 @@ export default function Ear() {
   const [checked, setChecked] = useState(false);
   const [playing, setPlaying] = useState(null); // 'all' | 'bar' | セクション名
   const [pos, setPos] = useState(-1);
-  const [melody, setMelody] = useState(true);
+  const [mix, setMix] = useState({ melody: true, bass: true, chords: true, drums: true });
   const ctrl = useRef(null);
 
   const stop = useCallback(() => {
@@ -62,7 +62,7 @@ export default function Ear() {
       from,
       to,
       loop,
-      melody,
+      mix,
       countIn: !loop,
       onTick: (b) => setPos(b),
       onEnd: () => {
@@ -131,10 +131,22 @@ export default function Ear() {
             ))}
           </div>
         )}
-        <label className="ear-toggle">
-          <input type="checkbox" checked={melody} onChange={(e) => { setMelody(e.target.checked); stop(); }} />
-          メロディーも鳴らす
-        </label>
+        <div className="pick-label">聴く楽器(タップでON/OFF)</div>
+        <div className="mixer">
+          {[['melody', 'メロディー'], ['bass', 'ベース'], ['chords', 'コード'], ['drums', 'ドラム']].map(([k, lab]) => (
+            <button
+              key={k}
+              className={`opt ${mix[k] ? 'sel' : ''}`}
+              aria-pressed={mix[k]}
+              onClick={() => { stop(); setMix({ ...mix, [k]: !mix[k] }); }}
+            >
+              {lab}
+            </button>
+          ))}
+        </div>
+        <p className="q-sub" style={{ margin: 0, fontWeight: 500 }}>
+          ①メロディーを鍵盤で弾いてキーを確かめる → ②ベースとメロディーでコードの当たりをつける → ③コード進行のパターンを読み解く
+        </p>
 
         {song.sections.map((s) => (
           <div key={s.from}>
@@ -166,9 +178,18 @@ export default function Ear() {
         ))}
 
         {checked ? (
-          <div className="advice good">
-            {song.bars}小節中 {score}小節 正解!
-          </div>
+          <>
+            <div className="advice good">
+              {song.bars}小節中 {score}小節 正解!
+            </div>
+            <div className="steps">
+              {song.sections.map((s) => (
+                <div className="step" key={s.from}>
+                  <span><strong className="em">{s.name || 'コード進行'}</strong>({s.from + 1}〜{s.to + 1}小節):{s.prog}</span>
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
           <>
             <div className="pick-label" style={{ marginTop: 4 }}>{sel + 1}小節目のコード</div>
