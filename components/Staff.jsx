@@ -10,7 +10,7 @@ const MARK_GLYPH = { '': '', '#': '♯', b: '♭', n: '♮' };
 const glyph = (a) => (a === 2 ? '𝄪' : a === 1 ? '♯' : a === -1 ? '♭' : a === -2 ? '𝄫' : '');
 
 // ト音記号の五線譜(自作SVG)。chalk=true で黒板のチョーク風
-export default function Staff({ notes = [], keySig = null, chalk = false, width = 340, cursor = false, label = '五線譜' }) {
+export default function Staff({ notes = [], keySig = null, chalk = false, width = 340, cursor = false, label = '五線譜', stack = false }) {
   const ink = chalk ? '#F4F1E6' : '#23382B';
   const W = width;
   const sigType = keySig ? keySig.t : '';
@@ -18,8 +18,29 @@ export default function Staff({ notes = [], keySig = null, chalk = false, width 
   const sigCount = sigLetters.length;
   const sigEnd = 74 + sigCount * 15;
   const x0 = sigCount || cursor ? sigEnd + 14 : 92;
-  const n = notes.length || 1;
+  const n = stack ? 1 : notes.length || 1;
   const spacing = Math.min(90, (W - 14 - x0) / n);
+  // 和音(縦に積む)の時:隣り合う音は符頭を右にずらし、臨時記号は左に段違いで並べる
+  const shift = [];
+  const accX = [];
+  if (stack) {
+    const order = notes.map((nt, i) => ({ s: step(nt), i })).sort((a, b) => a.s - b.s);
+    let prevS = null;
+    let prevShift = false;
+    let k = 0;
+    order.forEach(({ s, i }) => {
+      const sh = prevS !== null && s - prevS === 1 && !prevShift;
+      shift[i] = sh ? 17 : 0;
+      prevS = s;
+      prevShift = sh;
+    });
+    [...order].reverse().forEach(({ i }) => {
+      if (notes[i].a !== 0 || (notes[i].mark !== undefined && notes[i].mark !== '')) {
+        accX[i] = -27 - (k % 2) * 14;
+        k++;
+      }
+    });
+  }
   const lineYs = [30, 32, 34, 36, 38].map(y);
 
   return (
@@ -45,7 +66,7 @@ export default function Staff({ notes = [], keySig = null, chalk = false, width 
 
       {notes.map((nt, i) => {
         const s = step(nt);
-        const nx = x0 + spacing * (i + 0.5);
+        const nx = x0 + spacing * ((stack ? 0 : i) + 0.5) + (shift[i] || 0);
         const ny = y(s);
         const col = nt.color || ink;
         const ledgers = [];
@@ -62,7 +83,7 @@ export default function Staff({ notes = [], keySig = null, chalk = false, width 
               if (!g) return null;
               const dy = g === '♭' || g === '𝄫' || g === '𝄪' ? 5 : g === '♮' ? 7 : 8;
               return (
-                <text x={nx - 27} y={ny + dy} fontFamily="'Noto Music', serif" fontSize="25" fill={nt.markColor || col}>
+                <text x={nx - (shift[i] || 0) + (accX[i] ?? -27)} y={ny + dy} fontFamily="'Noto Music', serif" fontSize="25" fill={nt.markColor || col}>
                   {g}
                 </text>
               );
