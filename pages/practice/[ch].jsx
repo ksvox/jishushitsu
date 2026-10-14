@@ -299,12 +299,21 @@ export default function Practice() {
             )}
             {!isTest && (hint || phase === 'done') && <Steps q={q} />}
 
-            {!isTest && phase === 'done' && (
-              <div className="actions-row" style={{ paddingTop: 6, paddingBottom: 10 }}>
-                <Link href={`/learn/${ch}`} className="btn btn-line">覚え方</Link>
-                <button className="btn btn-ink" onClick={() => newQuestion(tab)}>次の問題</button>
-              </div>
-            )}
+            {!isTest && phase === 'done' && (() => {
+              const idx = conf.tabs.findIndex((t) => t.id === tab);
+              const nextTab = conf.tabs[idx + 1];
+              return (
+                <div className="next-actions">
+                  <button className="btn btn-ink" onClick={() => newQuestion(tab)}>同じ練習を続ける</button>
+                  {nextTab ? (
+                    <button className="btn btn-line" onClick={() => changeTab(nextTab.id)}>次の練習へ:{nextTab.label}</button>
+                  ) : (
+                    <Link href={`/practice/${ch}?mode=test`} className="btn btn-line">実力テストに挑戦する</Link>
+                  )}
+                  <Link href={`/learn/${ch}`} className="hint-link" style={{ textAlign: 'center' }}>覚え方を見る</Link>
+                </div>
+              );
+            })()}
           </>
         )}
       </main>

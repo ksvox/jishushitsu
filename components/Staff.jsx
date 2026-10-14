@@ -55,7 +55,7 @@ export default function Staff({ notes = [], keySig = null, chalk = false, width 
       {sigLetters.map((l, i) => {
         const s = sigType === '#' ? SHARP_AT[l] : FLAT_AT[l];
         return (
-          <text key={i} x={74 + i * 15} y={y(s) + (sigType === '#' ? 8 : 5)} fontFamily="'Noto Music', serif" fontSize="26" fill={(keySig.colors && keySig.colors[i]) || ink}>
+          <text key={i} x={74 + i * 15} y={y(s) + (sigType === '#' ? 4 : 3)} fontFamily="'Noto Music', serif" fontSize="26" fill={(keySig.colors && keySig.colors[i]) || ink}>
             {sigType === '#' ? '♯' : '♭'}
           </text>
         );
@@ -65,6 +65,12 @@ export default function Staff({ notes = [], keySig = null, chalk = false, width 
       )}
 
       {notes.map((nt, i) => {
+        // 音符の間が狭い時(スケールなど)は、符頭と臨時記号を小さくして重ならないようにする
+        const tight = !stack && spacing < 30 ? 2 : !stack && spacing < 40 ? 1 : 0;
+        const rx = [9, 7.6, 6.6][tight];
+        const fs = [25, 22, 20][tight];
+        const accDefault = [-27, -22, -18][tight];
+        const ledgerW = [15, 12, 11][tight];
         const s = step(nt);
         const nx = x0 + spacing * ((stack ? 0 : i) + 0.5) + (shift[i] || 0);
         const ny = y(s);
@@ -75,20 +81,22 @@ export default function Staff({ notes = [], keySig = null, chalk = false, width 
         return (
           <g key={i}>
             {ledgers.map((ls) => (
-              <line key={ls} x1={nx - 15} y1={y(ls)} x2={nx + 15} y2={y(ls)} stroke={ink} strokeWidth="1.5" />
+              <line key={ls} x1={nx - ledgerW} y1={y(ls)} x2={nx + ledgerW} y2={y(ls)} stroke={ink} strokeWidth="1.5" />
             ))}
             {(() => {
               // mark が指定されていれば、書かれた臨時記号('#','b','n','')をそのまま表示
               const g = nt.mark !== undefined ? MARK_GLYPH[nt.mark] : glyph(nt.a);
               if (!g) return null;
-              const dy = g === '♭' || g === '𝄫' || g === '𝄪' ? 5 : g === '♮' ? 7 : 8;
+              // Noto Musicの字形に合わせた高さ(♯・♮は中心、♭はふくらみを音の位置に)
+              const base = g === '♭' || g === '𝄫' ? 3 : g === '𝄪' ? 4 : g === '♮' ? 3 : 4;
+              const dy = Math.round((base * fs) / 25);
               return (
-                <text x={nx - (shift[i] || 0) + (accX[i] ?? -27)} y={ny + dy} fontFamily="'Noto Music', serif" fontSize="25" fill={nt.markColor || col}>
+                <text x={nx - (shift[i] || 0) + (accX[i] ?? accDefault)} y={ny + dy} fontFamily="'Noto Music', serif" fontSize={fs} fill={nt.markColor || col}>
                   {g}
                 </text>
               );
             })()}
-            <ellipse cx={nx} cy={ny} rx="9" ry="6.3" fill="none" stroke={col} strokeWidth="2.6" transform={`rotate(-22 ${nx} ${ny})`} />
+            <ellipse cx={nx} cy={ny} rx={rx} ry={rx * 0.7} fill="none" stroke={col} strokeWidth={tight ? 2.2 : 2.6} transform={`rotate(-22 ${nx} ${ny})`} />
           </g>
         );
       })}

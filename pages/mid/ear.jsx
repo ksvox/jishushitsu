@@ -218,9 +218,23 @@ export default function Ear() {
           </>
         )}
 
-        <button className="btn btn-ink" style={{ marginBottom: 10 }} onClick={() => newSong(level)}>
-          別のコードを聞き取る
-        </button>
+        <div className="next-actions">
+          <button className="btn btn-ink" onClick={() => newSong(level)}>
+            別のコードを聞き取る(同じレベル)
+          </button>
+          {checked && LEVEL_IDS.indexOf(level) < LEVEL_IDS.length - 1 && (
+            <button
+              className="btn btn-line"
+              onClick={() => {
+                const nx = LEVEL_IDS[LEVEL_IDS.indexOf(level) + 1];
+                setLevel(nx);
+                newSong(nx);
+              }}
+            >
+              次のレベルに挑戦:{LEVELS[LEVEL_IDS[LEVEL_IDS.indexOf(level) + 1]].label}
+            </button>
+          )}
+        </div>
       </main>
       <footer className="footer">© ボーカル道場K's VOX</footer>
     </div>

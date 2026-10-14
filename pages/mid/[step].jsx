@@ -273,7 +273,20 @@ export default function MidDrill() {
               <>
                 <div className="steps-head">解き方</div>
                 <Steps q={q} />
-                <button className="btn btn-ink" style={{ marginBottom: 10 }} onClick={() => next(tab)}>次の問題</button>
+                {(() => {
+                  const idx = conf.tabs.findIndex((t) => t.id === tab);
+                  const nextTab = conf.tabs[idx + 1];
+                  return (
+                    <div className="next-actions">
+                      <button className="btn btn-ink" onClick={() => next(tab)}>同じ練習を続ける</button>
+                      {nextTab ? (
+                        <button className="btn btn-line" onClick={() => { setTab(nextTab.id); next(nextTab.id); }}>次の練習へ:{nextTab.label}</button>
+                      ) : (
+                        <Link href={`/mid/${stepNo}?mode=test`} className="btn btn-line">実力テストに挑戦する</Link>
+                      )}
+                    </div>
+                  );
+                })()}
               </>
             )}
           </>

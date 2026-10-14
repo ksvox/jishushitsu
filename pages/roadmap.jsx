@@ -129,7 +129,23 @@ export default function Roadmap() {
                 </div>
               </>
             )}
-            <button className="btn btn-ink" style={{ marginBottom: 10 }} onClick={() => fresh(level)}>別の譜面で練習</button>
+            <div className="next-actions">
+              <button className="btn btn-ink" onClick={() => fresh(level)}>同じレベルの練習を続ける</button>
+              {IDS.indexOf(level) < IDS.length - 1 ? (
+                <button
+                  className="btn btn-line"
+                  onClick={() => {
+                    const nx = IDS[IDS.indexOf(level) + 1];
+                    setLevel(nx);
+                    fresh(nx);
+                  }}
+                >
+                  次のレベルの練習へ:{ROAD_LEVELS[IDS[IDS.indexOf(level) + 1]].label}
+                </button>
+              ) : (
+                <Link href="/" className="btn btn-line">トップへ戻る</Link>
+              )}
+            </div>
           </>
         ) : (
           <>
