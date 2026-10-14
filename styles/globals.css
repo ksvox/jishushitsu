@@ -397,3 +397,15 @@ button.sbar { cursor: pointer; }
 .order .good { color: #3c8a5a; text-decoration: underline; text-underline-offset: 4px; }
 .board .order { color: var(--chalk-y); }
 .read-as { font-size: 15px; color: var(--chalk-dim); }
+
+/* ===== 認定証 ===== */
+.cert-badge { font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--ink); background: var(--chalk-y); border-radius: 16px; padding: 6px 12px; text-decoration: none; letter-spacing: 0; }
+.cert-img { width: 100%; height: auto; border-radius: 6px; box-shadow: 0 6px 24px rgba(35, 56, 43, 0.18); }
+.cert-lock, .cert-name { display: flex; flex-direction: column; gap: 14px; text-align: center; padding: 20px 4px; line-height: 1.8; }
+.cert-lock p, .cert-name p { margin: 0; }
+.cert-congrats { font-family: 'Shippori Mincho', serif; font-size: 28px; font-weight: 800; color: var(--red); }
+.cert-label { display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 13px; font-weight: 700; color: var(--ink-mid); }
+.cert-label input { min-height: 50px; border-radius: 10px; border: 2px solid var(--ink); padding: 0 12px; font-size: 18px; font-family: inherit; }
+.cert-unlock { border: 2px solid #b08a3e; background: #fbf6e9; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: center; }
+.cert-unlock p { margin: 0; font-size: 14px; line-height: 1.7; }
+.cert-unlock-title { font-family: 'Shippori Mincho', serif; font-size: 22px; font-weight: 800; color: #8a6a2a; }

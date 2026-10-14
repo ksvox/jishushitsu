@@ -6,6 +6,7 @@ import { NameBuilder, builtName } from '../../components/MidQuestions';
 import Staff from '../../components/Staff';
 import { LEVELS, makeSong, sameChord } from '../../lib/ear';
 import { playSong } from '../../lib/band';
+import { PASS_RATE, markEarned } from '../../lib/certificate';
 
 const LEVEL_IDS = ['beginner', 'intermediate', 'advanced'];
 
@@ -182,6 +183,13 @@ export default function Ear() {
             <div className="advice good">
               {song.bars}小節中 {score}小節 正解!
             </div>
+            {level === 'advanced' && score >= Math.ceil(song.bars * PASS_RATE) && (
+              <div className="cert-unlock">
+                <div className="cert-unlock-title">🏅 隠しページが開きました!</div>
+                <p>上級で8割以上正解したあなたに、K's VOX公認「楽典マスター」の認定証を贈ります。</p>
+                <Link href="/certificate" className="btn btn-red" onClick={markEarned}>認定証を受け取る</Link>
+              </div>
+            )}
             <div className="steps">
               {song.sections.map((s) => (
                 <div className="step" key={s.from}>
@@ -198,7 +206,12 @@ export default function Ear() {
               <button className="btn btn-line" disabled={sel === 0} onClick={() => setSel(sel - 1)}>← 前の小節</button>
               <button className="btn btn-line" disabled={sel === song.bars - 1} onClick={() => setSel(sel + 1)}>次の小節 →</button>
             </div>
-            <button className="btn btn-red" disabled={!filled} onClick={() => { stop(); setChecked(true); }}>
+            <button className="btn btn-red" disabled={!filled} onClick={() => {
+                stop();
+                setChecked(true);
+                const ok = answers.filter((a, i) => sameChord(a, song.chords[i])).length;
+                if (level === 'advanced' && ok >= Math.ceil(song.bars * PASS_RATE)) markEarned();
+              }}>
               答え合わせ
             </button>
             {!filled && <p className="q-sub" style={{ margin: 0, textAlign: 'center' }}>全部の小節にコードを入れると答え合わせできます</p>}

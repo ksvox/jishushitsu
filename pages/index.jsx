@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { isEarned, loadCert } from '../lib/certificate';
 import { ClockIcon } from '../components/Icons';
 
 const MID = [
@@ -15,12 +17,19 @@ const CHAPTERS = [
 ];
 
 export default function Home() {
+  const [cert, setCert] = useState(false);
+  useEffect(() => {
+    setCert(!!loadCert() || isEarned());
+  }, []);
   return (
     <div className="app">
       <header className="board">
         <div className="wood-top" />
         <div className="top-head">
-          <div className="top-school">ボーカル道場 K's VOX</div>
+          <div className="top-school" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>ボーカル道場 K's VOX</span>
+            {cert && <Link href="/certificate" className="cert-badge">🏅 認定証</Link>}
+          </div>
           <div className="top-title-row">
             <h1 className="top-title">音楽自習室</h1>
           </div>
