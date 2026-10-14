@@ -214,23 +214,28 @@ export function DiatonicQ({ q, locked, onSubmit }) {
   const kname = keyLabel(q.key, q.minor);
 
   if (q.form === 'forward') {
-    const your = `${typ === null ? '?' : degreeName(t.i, q.minor, typ)} → ${builtName(name)}`;
+    // ② はルートだけ選ぶ。コードネーム = ルート + ①で選んだ種類
+    const built = name.l === undefined || typ === null ? '?' : builtName({ ...name, type: typ });
+    const your = `${typ === null ? '?' : degreeName(t.i, q.minor, typ)} → ${built}`;
     return (
       <>
         <h2 className="q-title">
           {kname}の<span className="em">{t.i + 1}番目</span>のダイアトニックコードは?
         </h2>
-        <p className="q-sub" style={{ margin: 0 }}>① 公式 → ② コードネームの順に答えよう</p>
+        <p className="q-sub" style={{ margin: 0 }}>① 公式 → ② ルートを当てはめてコードネームに</p>
         <TypePicker label={`① 公式(${t.i + 1}番目の種類)`} value={typ} onChange={setTyp} types={types} locked={locked} />
-        <div className="pick-label" style={{ marginTop: 6 }}>② コードネーム</div>
-        <NameBuilder value={name} onChange={setName} types={types} locked={locked} />
+        <div className="pick-label" style={{ marginTop: 6 }}>② {t.i + 1}番目の音(ルート)</div>
+        <RootPicker value={name} onChange={setName} locked={locked} />
+        <div className="your">
+          コードネーム:<b>{built}</b>
+        </div>
         {!locked && (
           <Submit
             your={your}
-            disabled={typ === null || name.l === undefined || name.type === undefined}
+            disabled={typ === null || name.l === undefined}
             onClick={() =>
               onSubmit({
-                ok: typ === t.type && name.l === t.root.l && name.a === t.root.a && name.type === t.type,
+                ok: typ === t.type && name.l === t.root.l && name.a === t.root.a,
                 your,
                 correct: `${t.degree} → ${t.name}`,
               })
